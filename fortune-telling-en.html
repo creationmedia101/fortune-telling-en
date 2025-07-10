@@ -1,0 +1,188 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Professional Chinese fortune-telling services, including I Ching and Feng Shui consultations. Book your session today!">
+  <meta name="keywords" content="Chinese fortune telling, I Ching, Feng Shui, divination, spiritual guidance">
+  <meta name="author" content="Your Name">
+  <title>Chinese Fortune-Telling Services</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    function App() {
+      return (
+        <div className="min-h-screen bg-gray-100 font-sans">
+          {/* Header */}
+          <header className="bg-indigo-600 text-white py-6">
+            <div className="container mx-auto px-4">
+              <h1 className="text-3xl font-bold">Chinese Fortune-Telling</h1>
+              <p className="mt-2">Discover your future with traditional Chinese divination</p>
+            </div>
+          </header>
+
+          {/* Divination Info Section */}
+          <section className="py-10">
+            <div className="container mx-auto px-4">
+              <h2 className="text-2xl font-bold mb-6">About Chinese Divination</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white p-4 shadow rounded">
+                  <h3 className="font-bold">I Ching</h3>
+                  <p>The ancient art of I Ching uses hexagrams to provide guidance on life’s questions.</p>
+                  <img src="https://source.unsplash.com/random/300x200?iching" alt="I Ching divination" className="mt-4 rounded" />
+                </div>
+                <div className="bg-white p-4 shadow rounded">
+                  <h3 className="font-bold">Feng Shui</h3>
+                  <p>Harmonize your environment with Feng Shui principles for balance and prosperity.</p>
+                  <img src="https://source.unsplash.com/random/300x200?fengshui" alt="Feng Shui consultation" className="mt-4 rounded" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Podcast Section */}
+          <section className="py-10 bg-gray-200">
+            <div className="container mx-auto px-4">
+              <h2 className="text-2xl font-bold mb-6">Client Stories Podcast</h2>
+              <p>Listen to our clients’ experiences with Chinese divination.</p>
+              <iframe
+                src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/YOUR_PLAYLIST_ID"
+                width="100%"
+                height="300"
+                frameBorder="0"
+              ></iframe>
+            </div>
+          </section>
+
+          {/* Order Process Section */}
+          <section className="py-10">
+            <div className="container mx-auto px-4">
+              <h2 className="text-2xl font-bold mb-6">How to Book</h2>
+              <ol className="list-decimal list-inside space-y-2">
+                <li>Fill out the booking form below.</li>
+                <li>We will contact you to schedule your session.</li>
+                <li>Make payment via PayPal.</li>
+                <li>Receive your personalized reading.</li>
+              </ol>
+            </div>
+          </section>
+
+          {/* Google Form Section */}
+          <section className="py-10 bg-gray-200">
+            <div className="container mx-auto px-4">
+              <h2 className="text-2xl font-bold mb-6">Booking Form</h2>
+              <iframe
+                src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true"
+                width="100%"
+                height="600"
+                frameBorder="0"
+                marginHeight="0"
+                marginWidth="0"
+              >
+                Loading…
+              </iframe>
+            </div>
+          </section>
+
+          {/* Amazon Affiliate Section */}
+          <section className="py-10">
+            <div className="container mx-auto px-4">
+              <h2 className="text-2xl font-bold mb-6">Recommended Products</h2>
+              <p>Explore our recommended divination tools on Amazon:</p>
+              <a
+                href="YOUR_AMAZON_AFFILIATE_LINK"
+                className="text-indigo-600 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Shop Now
+              </a>
+            </div>
+          </section>
+
+          {/* PayPal Payment Section */}
+          <section className="py-10 bg-gray-200">
+            <div className="container mx-auto px-4">
+              <h2 className="text-2xl font-bold mb-6">Payment</h2>
+              <p>Please complete the payment via PayPal after submitting the form.</p>
+              <div className="mt-4">
+                {/* Replace with your PayPal button code */}
+                <p>[Insert PayPal Button HTML Here]</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Contact Section */}
+          <section className="py-10">
+            <div className="container mx-auto px-4">
+              <h2 className="text-2xl font-bold mb-6">Contact Us</h2>
+              <p>Follow us on Instagram for updates and inquiries:</p>
+              <a
+                href="https://www.instagram.com/your_account"
+                className="text-indigo-600 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                @your_account
+              </a>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="bg-indigo-600 text-white py-6">
+            <div className="container mx-auto px-4 text-center">
+              <p>© 2025 Chinese Fortune-Telling. All rights reserved.</p>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
